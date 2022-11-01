@@ -1,6 +1,7 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,9 +39,15 @@ public class Tweet {
 
     private String content;
 
-    private Long inReplyTo;
+    @OneToMany(mappedBy = "tweet")
+    private Tweet inReplyTo;
 
-    private Long repostOf;
+    private List<Tweet> replies;
+
+    @OneToMany(mappedBy = "tweet")
+    private Tweet repostOf;
+
+    private List<Tweet> reposts;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
