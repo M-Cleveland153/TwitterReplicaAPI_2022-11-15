@@ -7,8 +7,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -36,6 +40,15 @@ public class User {
 	@Embedded
 	private Profile profile;
 	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "author", cascade = {CascadeType.ALL})
 	private List<Tweet> tweets;
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "followers_following",
+        joinColumns = { @JoinColumn(name = "follower_id") },
+        inverseJoinColumns = { @JoinColumn(name = "following_id") })
+	private List<User> followers;
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "followers")
+	private List<User> following;
 }
