@@ -27,7 +27,7 @@ public class Tweet {
     private Long id;
 
     @Column(nullable = false)
-    private int author;
+    private Long author;
     
     @Column(nullable = false)
     private Timestamp posted;
@@ -36,9 +36,9 @@ public class Tweet {
 
     private String content;
 
-    private int inReplyTo;
+    private Long inReplyTo;
 
-    private int repostOf;
+    private Long repostOf;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
