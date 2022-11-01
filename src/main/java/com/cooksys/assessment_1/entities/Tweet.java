@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.lang.Nullable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Tweet {
-
-    // Michael was here
     
     @Id
     @GeneratedValue
@@ -33,8 +32,7 @@ public class Tweet {
     private Long id;
 
     @ManyToOne
-    @Column(nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User author;
     
     @Column(nullable = false)
@@ -45,10 +43,10 @@ public class Tweet {
 
     private String content;
 
-    @OneToMany(mappedBy = "tweet")
+    @ManyToOne
     private Tweet inReplyTo;
 
-    @OneToMany(mappedBy = "tweet")
+    @ManyToOne
     private Tweet repostOf;
 
  // May need to switch cascade type to persist and merge
