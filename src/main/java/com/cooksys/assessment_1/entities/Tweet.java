@@ -6,12 +6,15 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,25 +29,35 @@ public class Tweet {
     @Column(unique = true)
     private Long id;
 
-    @Column(nullable = false)
-    private int author;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User author;
     
     @Column(nullable = false)
+    @CreationTimestamp
     private Timestamp posted;
 
     private boolean deleted;
 
     private String content;
 
-    private int inReplyTo;
+    @ManyToOne
+    private Tweet inReplyTo;
 
-    private int repostOf;
+    @ManyToOne
+    private Tweet repostOf;
 
-    // @ManyToOne
-    // @JoinColumn(name = "author_id")
-    // private User user;
-
-    // @OneToMany(mappedBy = "tweet", cascade = {CascadeType.ALL})
-    // private List<Hashtag> hashtags;
+ // May need to switch cascade type to persist and merge
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "tweet_hashtags",
+        joinColumns = { @JoinColumn(name = "tweet_id") },
+        inverseJoinColumns = { @JoinColumn(name = "hashtag_id") })
+    private List<Hashtag> hashtags;
+    
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "likedTweets")
+    private List<User> likedByUsers;
+    
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "mentionedTweets")
+    private List<User> mentionedByUsers;
 
 }
