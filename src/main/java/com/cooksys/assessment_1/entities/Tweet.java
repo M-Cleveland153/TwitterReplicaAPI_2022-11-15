@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,10 +31,13 @@ public class Tweet {
     @Column(unique = true)
     private Long id;
 
+    @ManyToOne
     @Column(nullable = false)
-    private Long author;
+    @JoinColumn(name = "user_id")
+    private User author;
     
     @Column(nullable = false)
+    @CreationTimestamp
     private Timestamp posted;
 
     private boolean deleted;
@@ -42,16 +47,8 @@ public class Tweet {
     @OneToMany(mappedBy = "tweet")
     private Tweet inReplyTo;
 
-    private List<Tweet> replies;
-
     @OneToMany(mappedBy = "tweet")
     private Tweet repostOf;
-
-    private List<Tweet> reposts;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
  // May need to switch cascade type to persist and merge
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
