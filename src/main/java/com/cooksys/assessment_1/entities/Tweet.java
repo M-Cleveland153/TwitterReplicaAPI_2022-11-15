@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -44,10 +45,11 @@ public class Tweet {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+ // May need to switch cascade type to persist and merge
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tweet_hashtags",
-        joinColumns = @JoinColumn(name = "tweet_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "hashtag_id", referencedColumnName = "id"))
-    private Set<Hashtag> tweet_hashtags;
+        joinColumns = { @JoinColumn(name = "tweet_id") },
+        inverseJoinColumns = { @JoinColumn(name = "hashtag_id") })
+    private Set<Hashtag> hashtags;
 
 }

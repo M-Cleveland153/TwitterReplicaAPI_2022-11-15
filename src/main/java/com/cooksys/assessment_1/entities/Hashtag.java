@@ -28,8 +28,8 @@ public class Hashtag {
 
 	private Timestamp lastUsed;
 
-	@ManyToMany(cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE }, fetch = FetchType.EAGER, mappedBy = "tweet_hashtags")
-	private Set<Tweet> tweets;
+	// May need to switch cascade type to persist and merge
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "hashtags")
+    private Set<Tweet> tweets;
 
 }
