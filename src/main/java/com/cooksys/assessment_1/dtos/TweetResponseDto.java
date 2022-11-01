@@ -11,8 +11,7 @@ public class TweetResponseDto {
         
     private Long id;
 
-    // Need access to UserResponseDto
-    // private UserResponseDto author;
+    private UserResponseDto author;
 
     private Timestamp posted;
 
