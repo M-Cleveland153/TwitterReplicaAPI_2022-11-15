@@ -51,4 +51,16 @@ public class User {
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "followers")
 	private List<User> following;
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "user_likes",
+        joinColumns = { @JoinColumn(name = "user_id") },
+        inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
+	private List<Tweet> likedTweets;
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "user_mentions",
+        joinColumns = { @JoinColumn(name = "user_id") },
+        inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
+	private List<Tweet> mentionedTweets;
 }

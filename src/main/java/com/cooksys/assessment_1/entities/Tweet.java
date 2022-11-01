@@ -1,7 +1,7 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,10 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.lang.Nullable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,6 +52,12 @@ public class Tweet {
     @JoinTable(name = "tweet_hashtags",
         joinColumns = { @JoinColumn(name = "tweet_id") },
         inverseJoinColumns = { @JoinColumn(name = "hashtag_id") })
-    private Set<Hashtag> hashtags;
+    private List<Hashtag> hashtags;
+    
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "likedTweets")
+    private List<User> likedByUsers;
+    
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "mentionedTweets")
+    private List<User> mentionedByUsers;
 
 }

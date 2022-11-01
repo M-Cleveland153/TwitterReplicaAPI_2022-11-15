@@ -1,7 +1,7 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -30,6 +30,6 @@ public class Hashtag {
 
 	// May need to switch cascade type to persist and merge
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "hashtags")
-    private Set<Tweet> tweets;
+    private List<Tweet> tweets;
 
 }
