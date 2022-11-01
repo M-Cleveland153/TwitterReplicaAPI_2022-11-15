@@ -1,12 +1,15 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -33,6 +36,6 @@ public class User {
 	@Embedded
 	private Profile profile;
 	
-	
-	
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
+	private List<Tweet> tweets;
 }

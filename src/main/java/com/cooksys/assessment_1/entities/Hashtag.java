@@ -8,9 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,23 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Hashtag {
-    
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    private String label;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    private Timestamp firstUsed;
+	private String label;
 
-    private Timestamp lastUsed;
+	private Timestamp firstUsed;
 
-    @ManyToOne
-    @JoinColumn(name = "tweet_id")
-    private Tweet tweet;
+	private Timestamp lastUsed;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-    fetch = FetchType.EAGER, mappedBy = "tweet_hashtags")
-    private Set<Tweet> tweets;
+	@ManyToMany(cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE }, fetch = FetchType.EAGER, mappedBy = "tweet_hashtags")
+	private Set<Tweet> tweets;
 
 }
