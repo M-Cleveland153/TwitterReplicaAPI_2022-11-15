@@ -5,9 +5,6 @@ import java.util.List;
 import com.cooksys.assessment_1.dtos.ContextDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
-import com.cooksys.assessment_1.entities.Tweet;
-import com.cooksys.assessment_1.mappers.TweetMapper;
-import com.cooksys.assessment_1.repositories.TweetRepository;
 import com.cooksys.assessment_1.services.TweetService;
 
 import org.springframework.stereotype.Service;
@@ -17,9 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
-
-    private final TweetRepository tweetRepository;
-    private final TweetMapper tweetMapper;
 
     @Override
     public List<TweetResponseDto> getAllTweets() {

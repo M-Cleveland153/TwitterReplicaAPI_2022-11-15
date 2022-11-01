@@ -1,7 +1,6 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,6 +24,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Tweet {
+
+    // Michael was here
     
     @Id
     @GeneratedValue
