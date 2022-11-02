@@ -10,6 +10,6 @@ import com.cooksys.assessment_1.entities.Hashtag;
 @Repository
 public interface HashtagRepository extends JpaRepository<Hashtag, Long>{
 	
-	Optional<Hashtag> findById(Long id);
+	Optional<Hashtag> findByLabelAndDeletedFalse(String label);
 
 }
