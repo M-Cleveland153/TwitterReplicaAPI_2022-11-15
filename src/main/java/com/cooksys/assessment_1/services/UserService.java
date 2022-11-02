@@ -3,6 +3,7 @@ package com.cooksys.assessment_1.services;
 import java.util.List;
 
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.ProfileDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserRequestDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
@@ -15,7 +16,7 @@ public interface UserService {
 	
 	UserResponseDto getUser(String username);
 	
-	UserResponseDto updateUser(String username, CredentialsDto credentialsDto);
+	UserResponseDto updateUser(String username, CredentialsDto credentialsDto, ProfileDto profileDto);
 
 	UserResponseDto deleteUser(String username, CredentialsDto credentialsDto);
 

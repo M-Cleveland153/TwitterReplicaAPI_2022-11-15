@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.ProfileDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserRequestDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
@@ -45,8 +46,8 @@ public class UserController {
 	}
 	
 	@PatchMapping("/{username}")
-	public UserResponseDto updateUser(@PathVariable String username, @RequestBody CredentialsDto CredentialsDto) {
-		return userService.updateUser(username, CredentialsDto);
+	public UserResponseDto updateUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto, @RequestBody ProfileDto profileDto ) {
+		return userService.updateUser(username, credentialsDto, profileDto);
 	}
 	
 	@DeleteMapping("/{username}")
