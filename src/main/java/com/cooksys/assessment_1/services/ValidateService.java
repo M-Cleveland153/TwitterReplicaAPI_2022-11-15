@@ -2,10 +2,10 @@ package com.cooksys.assessment_1.services;
 
 public interface ValidateService {
 
-	boolean checkHashtag();
+	boolean checkHashtag(String label);
 
-	boolean checkUsernameExists();
+	boolean checkUsernameExists(String username);
 
-	boolean checkUsernameAvailable();
+	boolean checkUsernameAvailable(String username);
 
 }

@@ -5,19 +5,19 @@ import com.cooksys.assessment_1.services.ValidateService;
 public class ValidateServiceImpl implements ValidateService{
 
 	@Override
-	public boolean checkHashtag() {
+	public boolean checkHashtag(String label) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean checkUsernameExists() {
+	public boolean checkUsernameExists(String username) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean checkUsernameAvailable() {
+	public boolean checkUsernameAvailable(String username) {
 		// TODO Auto-generated method stub
 		return false;
 	}

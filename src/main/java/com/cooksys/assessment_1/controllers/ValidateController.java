@@ -1,6 +1,7 @@
 package com.cooksys.assessment_1.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,17 +17,17 @@ public class ValidateController {
 	private final ValidateService validateService;
 	
 	@GetMapping("/tag/exists/{label}")
-	public boolean checkHashtag() {
-		return validateService.checkHashtag();
+	public boolean checkHashtag(@PathVariable String label) {
+		return validateService.checkHashtag(label);
 	}
 	
 	@GetMapping("/username/exists/{username}")
-	public boolean checkUsernameExists() {
-		return validateService.checkUsernameExists();
+	public boolean checkUsernameExists(@PathVariable String username) {
+		return validateService.checkUsernameExists(username);
 	}
 	
 	@GetMapping("/username/available/{username}")
-	public boolean checkUsernameAvailable() {
-		return validateService.checkUsernameAvailable();
+	public boolean checkUsernameAvailable(@PathVariable String username) {
+		return validateService.checkUsernameAvailable(username);
 	}
 }
