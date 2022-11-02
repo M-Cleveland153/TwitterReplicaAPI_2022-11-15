@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +39,8 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/{username}")
-	public UserResponseDto deleteUser(@RequestBody CredentialsDto credentialsDto) {
-		return userService.deleteUser(credentialsDto);
+	public UserResponseDto deleteUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
+		return userService.deleteUser(username, credentialsDto);
 	}
 	
 //	@PostMapping("/{username}/follow")
@@ -53,22 +54,22 @@ public class UserController {
 //	}
 	
 	@GetMapping("/{username}/feed") 
-	public List<TweetResponseDto> getAllUserTweets(){
-		return userService.getAllUserTweets();
+	public List<TweetResponseDto> getAllUserTweets(@PathVariable String username){
+		return userService.getAllUserTweets(username);
 	}
 	
 	@GetMapping("/{username}/mentions")
-	public List<TweetResponseDto> getAllUserMentions(){
-		return userService.getAllUserMentions();
+	public List<TweetResponseDto> getAllUserMentions(@PathVariable String username){
+		return userService.getAllUserMentions(username);
 	}
 	
 	@GetMapping("/{username}/followers")
-	public List<UserResponseDto> getAllUserFollowers(){
-		return userService.getAllUserFollowers();
+	public List<UserResponseDto> getAllUserFollowers(@PathVariable String username){
+		return userService.getAllUserFollowers(username);
 	}
 	
 	@GetMapping("/{username}/following") 
-	public List<UserResponseDto> getAllUsersFollowed(){
-		return userService.getAllUsersFollowed();
+	public List<UserResponseDto> getAllUsersFollowed(@PathVariable String username){
+		return userService.getAllUsersFollowed(username);
 	}
 }

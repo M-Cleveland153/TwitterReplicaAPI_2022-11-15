@@ -13,19 +13,19 @@ public interface UserService {
 
 	UserResponseDto createUser(UserRequestDto userRequestDto);
 
-	UserResponseDto deleteUser(CredentialsDto credentialsDto);
+	UserResponseDto deleteUser(String username, CredentialsDto credentialsDto);
 
 	//	Object followUser(CredentialsDto credentialsDto);
 
 	//	Object unfollowUser(CredentialsDto credentialsDto);
 
-	List<TweetResponseDto> getAllUserTweets();
+	List<TweetResponseDto> getAllUserTweets(String username);
 
-	List<TweetResponseDto> getAllUserMentions();
+	List<TweetResponseDto> getAllUserMentions(String username);
 
-	List<UserResponseDto> getAllUserFollowers();
+	List<UserResponseDto> getAllUserFollowers(String username);
 
-	List<UserResponseDto> getAllUsersFollowed();
+	List<UserResponseDto> getAllUsersFollowed(String username);
 
 
 	

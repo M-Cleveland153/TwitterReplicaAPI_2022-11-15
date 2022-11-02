@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{@Override
+	
 	public List<UserResponseDto> getAllUsers() {
 		// TODO Auto-generated method stub
 		return null;
@@ -27,33 +28,34 @@ public class UserServiceImpl implements UserService{@Override
 	}
 
 	@Override
-	public UserResponseDto deleteUser(CredentialsDto credentialsDto) {
+	public UserResponseDto deleteUser(String username, CredentialsDto credentialsDto) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<TweetResponseDto> getAllUserTweets() {
+	public List<TweetResponseDto> getAllUserTweets(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<TweetResponseDto> getAllUserMentions() {
+	public List<TweetResponseDto> getAllUserMentions(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<UserResponseDto> getAllUserFollowers() {
+	public List<UserResponseDto> getAllUserFollowers(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<UserResponseDto> getAllUsersFollowed() {
+	public List<UserResponseDto> getAllUsersFollowed(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 
 }
