@@ -1,12 +1,6 @@
 package com.cooksys.assessment_1.entities;
 
 import java.sql.Timestamp;
-<<<<<<< HEAD
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-=======
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
->>>>>>> master
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
