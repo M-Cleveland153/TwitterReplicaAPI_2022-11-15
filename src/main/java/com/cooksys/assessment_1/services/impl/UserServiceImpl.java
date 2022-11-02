@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService{
 			if(user.getCredentials().getUsername().equals(username)) {
 				Long id = user.getId();
 				optionalUser = userRepository.findByIdAndDeletedFalse(id);
+				//BadRequest here if user is deleted
 				return optionalUser.get();
 			}
 		}
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public List<UserResponseDto> getAllUsers() {
-		return userMapper.entitiesToDtos(userRepository.findAll());
+		return userMapper.entitiesToDtos(userRepository.findAllByDeletedFalse());
 	}
 
 	@Override
