@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,8 +33,9 @@ public class User {
 	private Long id;
 	
 	@Embedded
-	private Credentials credential;
+	private Credentials credentials;
 	
+	@CreationTimestamp
 	private Timestamp joined;
 	
 	private boolean deleted;
@@ -57,10 +60,7 @@ public class User {
         joinColumns = { @JoinColumn(name = "user_id") },
         inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
 	private List<Tweet> likedTweets;
-	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "user_mentions",
-        joinColumns = { @JoinColumn(name = "user_id") },
-        inverseJoinColumns = { @JoinColumn(name = "tweet_id") })
+
+	 @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "mentionedUsers")
 	private List<Tweet> mentionedTweets;
 }

@@ -8,7 +8,7 @@ import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.entities.Tweet;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface TweetMapper {
     
     Tweet DtoToEntity(TweetRequestDto tweetRequestDto);
@@ -16,7 +16,5 @@ public interface TweetMapper {
     TweetResponseDto entityToDto(Tweet entity);
 
     List<TweetResponseDto> entitiesToDtos(List<Tweet> tweets);
-
-    // ToDo: Find out how to map ContextDto
 
 }

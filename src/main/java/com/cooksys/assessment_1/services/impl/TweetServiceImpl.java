@@ -7,6 +7,8 @@ import com.cooksys.assessment_1.dtos.CredentialsDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
+import com.cooksys.assessment_1.mappers.TweetMapper;
+import com.cooksys.assessment_1.repositories.TweetRepository;
 import com.cooksys.assessment_1.services.TweetService;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
 
+	private final TweetMapper tweetMapper;
+	private final TweetRepository tweetRepository;
+	
     @Override
     public List<TweetResponseDto> getAllTweets() {
         // List<Tweet> allTweets = tweetRepository.findAll();

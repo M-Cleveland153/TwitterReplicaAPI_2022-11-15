@@ -2,16 +2,22 @@ package com.cooksys.assessment_1.services.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.cooksys.assessment_1.dtos.HashtagResponseDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.mappers.HashtagMapper;
 import com.cooksys.assessment_1.repositories.HashtagRepository;
 import com.cooksys.assessment_1.services.HashtagService;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class HashtagServiceImpl implements HashtagService{
 	
-	private HashtagMapper hashtagMapper;
-	private HashtagRepository hashtagRepository;
+	private final HashtagMapper hashtagMapper;
+	private final HashtagRepository hashtagRepository;
 
 	@Override
 	public List<HashtagResponseDto> getAllHashtags() {
