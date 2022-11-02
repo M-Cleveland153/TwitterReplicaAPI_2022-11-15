@@ -12,12 +12,18 @@ public interface UserService {
 	List<UserResponseDto> getAllUsers();
 
 	UserResponseDto createUser(UserRequestDto userRequestDto);
+	
+	UserResponseDto getUser(String username);
+	
+	UserResponseDto updateUser(String username, CredentialsDto credentialsDto);
 
 	UserResponseDto deleteUser(String username, CredentialsDto credentialsDto);
 
 	//	Object followUser(CredentialsDto credentialsDto);
 
 	//	Object unfollowUser(CredentialsDto credentialsDto);
+	
+	List<TweetResponseDto> getUserFeed(String username);
 
 	List<TweetResponseDto> getAllUserTweets(String username);
 
@@ -26,7 +32,5 @@ public interface UserService {
 	List<UserResponseDto> getAllUserFollowers(String username);
 
 	List<UserResponseDto> getAllUsersFollowed(String username);
-
-
 	
 }

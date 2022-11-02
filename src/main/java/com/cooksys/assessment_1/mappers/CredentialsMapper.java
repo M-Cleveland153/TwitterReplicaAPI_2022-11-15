@@ -8,5 +8,7 @@ import com.cooksys.assessment_1.entities.Credentials;
 @Mapper(componentModel = "spring")
 public interface CredentialsMapper {
 	
-	Credentials requestDtoToEntity(CredentialsDto credentialsDto);
+	Credentials dtoToEntity(CredentialsDto credentialsDto);
+	
+	CredentialsDto entityToDto(Credentials credentials);
 }

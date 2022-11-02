@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,16 @@ public class UserController {
 		return userService.createUser(userRequestDto);
 	}
 	
+	@GetMapping("/{username}")
+	public UserResponseDto getUser(@PathVariable String username) {
+		return userService.getUser(username);
+	}
+	
+	@PatchMapping("/{username}")
+	public UserResponseDto updateUser(@PathVariable String username, @RequestBody CredentialsDto CredentialsDto) {
+		return userService.updateUser(username, CredentialsDto);
+	}
+	
 	@DeleteMapping("/{username}")
 	public UserResponseDto deleteUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
 		return userService.deleteUser(username, credentialsDto);
@@ -54,13 +65,18 @@ public class UserController {
 //	}
 	
 	@GetMapping("/{username}/feed") 
-	public List<TweetResponseDto> getAllUserTweets(@PathVariable String username){
-		return userService.getAllUserTweets(username);
+	public List<TweetResponseDto> getUserFeed(@PathVariable String username){
+		return userService.getUserFeed(username);
 	}
 	
 	@GetMapping("/{username}/mentions")
 	public List<TweetResponseDto> getAllUserMentions(@PathVariable String username){
 		return userService.getAllUserMentions(username);
+	}
+	
+	@GetMapping("/{username}/tweets")
+	public List<TweetResponseDto> getAllUserTweets(@PathVariable String username){
+		return userService.getAllUserTweets(username);
 	}
 	
 	@GetMapping("/{username}/followers")

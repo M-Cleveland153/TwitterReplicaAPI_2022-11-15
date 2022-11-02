@@ -10,5 +10,5 @@ import com.cooksys.assessment_1.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	Optional<User> findById(Long id);
+	Optional<User> findByIdAndDeletedFalse(Long id);
 }

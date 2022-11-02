@@ -5,30 +5,72 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.ProfileDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserRequestDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
+import com.cooksys.assessment_1.entities.Credentials;
+import com.cooksys.assessment_1.entities.Profile;
+import com.cooksys.assessment_1.entities.User;
+import com.cooksys.assessment_1.mappers.CredentialsMapper;
+import com.cooksys.assessment_1.mappers.ProfileMapper;
+import com.cooksys.assessment_1.mappers.UserMapper;
+import com.cooksys.assessment_1.repositories.UserRepository;
 import com.cooksys.assessment_1.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{@Override
+public class UserServiceImpl implements UserService{
 	
+	private final UserMapper userMapper;
+	private final UserRepository userRepository;
+	private final CredentialsMapper credentialsMapper;
+	private final ProfileMapper profileMapper;
+	
+	
+	@Override
 	public List<UserResponseDto> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		return userMapper.entitiesToDtos(userRepository.findAll());
 	}
 
 	@Override
 	public UserResponseDto createUser(UserRequestDto userRequestDto) {
+		User userToCreate = userMapper.requestDtoToEntity(userRequestDto);
+		
+		CredentialsDto userCredentialsDto = userRequestDto.getCredentials();
+		Credentials userCredentials = credentialsMapper.dtoToEntity(userCredentialsDto);
+		
+		ProfileDto userProfileDto = userRequestDto.getProfile();
+		Profile userProfile = profileMapper.requestDtoToEntity(userProfileDto);
+		
+		userToCreate.setCredentials(userCredentials);
+		userToCreate.setProfile(userProfile);
+		
+		return userMapper.entityToDto(userRepository.saveAndFlush(userToCreate));
+	}
+	
+	@Override
+	public UserResponseDto getUser(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public UserResponseDto updateUser(String username, CredentialsDto credentialsDto) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public UserResponseDto deleteUser(String username, CredentialsDto credentialsDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<TweetResponseDto> getUserFeed(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -56,6 +98,6 @@ public class UserServiceImpl implements UserService{@Override
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 
 }
