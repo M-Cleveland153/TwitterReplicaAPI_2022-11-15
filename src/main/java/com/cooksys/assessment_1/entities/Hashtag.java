@@ -36,6 +36,8 @@ public class Hashtag {
 	// May need to switch cascade type to persist and merge
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "hashtags")
     private List<Tweet> tweets;
+	
+	private boolean deleted;
 
 
 }
