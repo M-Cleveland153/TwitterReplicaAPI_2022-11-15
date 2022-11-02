@@ -1,6 +1,7 @@
 package com.cooksys.assessment_1.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.cooksys.assessment_1.dtos.UserResponseDto;
 import com.cooksys.assessment_1.entities.Credentials;
 import com.cooksys.assessment_1.entities.Profile;
 import com.cooksys.assessment_1.entities.User;
+import com.cooksys.assessment_1.exceptions.NotFoundException;
 import com.cooksys.assessment_1.mappers.CredentialsMapper;
 import com.cooksys.assessment_1.mappers.ProfileMapper;
 import com.cooksys.assessment_1.mappers.UserMapper;
@@ -29,6 +31,20 @@ public class UserServiceImpl implements UserService{
 	private final CredentialsMapper credentialsMapper;
 	private final ProfileMapper profileMapper;
 	
+	
+	public User getUserByUsername(String username) {
+		List<User> users = userRepository.findAll();
+		Optional<User> optionalUser;
+		
+		for(User user: users) {
+			if(user.getCredentials().getUsername().equals(username)) {
+				Long id = user.getId();
+				optionalUser = userRepository.findByIdAndDeletedFalse(id);
+				return optionalUser.get();
+			}
+		}
+		throw new NotFoundException("User with username: " + username + " not found");
+	}
 	
 	@Override
 	public List<UserResponseDto> getAllUsers() {
@@ -53,8 +69,8 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public UserResponseDto getUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return userMapper.entityToDto(userRepository.saveAndFlush(getUserByUsername(username)));
 	}
 	
 	@Override
