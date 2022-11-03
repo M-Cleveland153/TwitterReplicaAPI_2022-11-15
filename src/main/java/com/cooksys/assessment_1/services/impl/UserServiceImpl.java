@@ -13,12 +13,15 @@ import com.cooksys.assessment_1.dtos.UserRequestDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
 import com.cooksys.assessment_1.entities.Credentials;
 import com.cooksys.assessment_1.entities.Profile;
+import com.cooksys.assessment_1.entities.Tweet;
 import com.cooksys.assessment_1.entities.User;
 import com.cooksys.assessment_1.exceptions.BadRequestException;
 import com.cooksys.assessment_1.exceptions.NotFoundException;
 import com.cooksys.assessment_1.mappers.CredentialsMapper;
 import com.cooksys.assessment_1.mappers.ProfileMapper;
+import com.cooksys.assessment_1.mappers.TweetMapper;
 import com.cooksys.assessment_1.mappers.UserMapper;
+import com.cooksys.assessment_1.repositories.TweetRepository;
 import com.cooksys.assessment_1.repositories.UserRepository;
 import com.cooksys.assessment_1.services.UserService;
 
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final CredentialsMapper credentialsMapper;
 	private final ProfileMapper profileMapper;
+	private final TweetMapper tweetMapper;
+	private final TweetRepository tweetRepository;
+	
 
 	// Helper methods
 
@@ -215,8 +221,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<TweetResponseDto> getAllUserTweets(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User userWithTweets = getUserByUsername(username);
+		List<Tweet> userTweets = userWithTweets.getTweets();
+		List<Tweet> newUserTweets = new ArrayList<>();
+		
+		for(Tweet tweet : userTweets) {
+			if(!tweet.isDeleted()) {
+				newUserTweets.add(tweet);
+			}
+		}
+		
+		return tweetMapper.entitiesToDtos(tweetRepository.saveAllAndFlush(newUserTweets));
 	}
 
 	@Override
