@@ -26,6 +26,7 @@ public class HashtagServiceImpl implements HashtagService{
 	private final HashtagRepository hashtagRepository;
 	private final TweetMapper tweetMapper;
 	private final TweetRepository tweetRepository;
+	 
 	
 	private Hashtag getHashtag(String label) {
 		Optional<Hashtag> optionalHashtag = hashtagRepository.findByLabelAndDeletedFalse(label);
