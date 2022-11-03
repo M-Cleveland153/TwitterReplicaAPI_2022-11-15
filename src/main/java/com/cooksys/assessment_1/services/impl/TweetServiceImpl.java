@@ -86,9 +86,9 @@ public class TweetServiceImpl implements TweetService {
                 hashtagsInContent.add(matcher.group());
             }
 
+            // Check hashtags against the hashtagRepo, and add if they don't exist
             for (String hashtag : hashtagsInContent)
             {
-                // Check hashtags against the hashtagRepo, and add if they don't exist
                 Hashtag newHashtag = hashtagRepository.findByLabel(hashtag);
 
                 if (newHashtag == null)
@@ -217,7 +217,6 @@ public class TweetServiceImpl implements TweetService {
         Tweet replyTweet = tweetMapper.DtoToEntity(tweetRequestDto);
         User user = userRepository.findByCredentials(credentialsMapper.dtoToEntity(tweetRequestDto.getCredentials()));
         
-        // Exception checking
         if (user == null) throw new NotAuthorizedException("Invalid login information to make this request.");
         if (targetTweet.isDeleted()) throw new NotFoundException("Tweet of ID: " + id + " is no longer available.");
         if (replyTweet.getContent() == null) throw new BadRequestException("Tweet must contain content.");
@@ -231,12 +230,19 @@ public class TweetServiceImpl implements TweetService {
         
     @Override
     public TweetResponseDto repostTweet(Long id, CredentialsDto credentialsDto) {
-        // ToDo: Creates a repost of the tweet with the given id. The author of the repost should match the credentials provided in the request body. If the given tweet is deleted or otherwise doesn’t exist, or the given credentials do not match an active user in the database, an error should be sent in lieu of a response.
-    
-        // Because this creates a repost tweet, content is not allowed. Additionally, notice that the repostOf property is not provided by the request. The server must create that relationship.
-    
-        // The response should contain the newly-created tweet.
-        return null;
+        Tweet targetTweet = getTweet(id);
+        User user = userRepository.findByCredentials(credentialsMapper.dtoToEntity(credentialsDto));
+        
+        if (user == null) throw new NotAuthorizedException("Invalid login information to make this request.");
+        if (targetTweet.isDeleted()) throw new NotFoundException("Tweet of ID: " + id + " is no longer available.");
+        
+        Tweet repostTweet = new Tweet();
+        repostTweet.setAuthor(user);
+        repostTweet.setRepostOf(targetTweet);
+        targetTweet.getReposts().add(repostTweet);
+        tweetRepository.saveAndFlush(targetTweet);
+
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repostTweet));
     }
 
     @Override
