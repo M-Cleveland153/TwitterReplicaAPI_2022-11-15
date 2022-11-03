@@ -1,5 +1,6 @@
 package com.cooksys.assessment_1.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -226,8 +227,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserResponseDto> getAllUserFollowers(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User userWithFollowers = getUserByUsername(username);
+		List<User> userFollowers = userWithFollowers.getFollowers();
+		List<User> newUserFollowers = new ArrayList<>();
+		
+		for(User user : userFollowers) {
+			if(!user.isDeleted()) {
+				newUserFollowers.add(user);
+			}
+		}
+		
+		return userMapper.entitiesToDtos(userRepository.saveAllAndFlush(newUserFollowers));
 	}
 
 	@Override
