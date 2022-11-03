@@ -1,5 +1,6 @@
 package com.cooksys.assessment_1.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cooksys.assessment_1.dtos.ContextDto;
@@ -7,6 +8,7 @@ import com.cooksys.assessment_1.dtos.CredentialsDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
+import com.cooksys.assessment_1.entities.Tweet;
 import com.cooksys.assessment_1.mappers.TweetMapper;
 import com.cooksys.assessment_1.repositories.TweetRepository;
 import com.cooksys.assessment_1.services.TweetService;
@@ -103,32 +105,50 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public ContextDto getContextByTweetId(Long id) {
-        // ToDo: Retrieves the context of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-
-        // IMPORTANT: While deleted tweets should not be included in the before and after properties of the result, transitive replies should. What that means is that if a reply to the target of the context is deleted, but there’s another reply to the deleted reply, the deleted reply should be excluded but the other reply should remain.
+        // 	ToDo: Retrieves the context of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
+    	//	an error should be sent in lieu of a response.
+        // 	IMPORTANT: While deleted tweets should not be included in the before and after properties of the result, 
+    	//	transitive replies should. What that means is that if a reply to the target of the context is deleted, but there’s 
+    	//	another reply to the deleted reply, the deleted reply should be excluded but the other reply should remain.
         return null;
     }
 
     @Override
     public List<TweetResponseDto> getRepliesByTweetId(Long id) {
-        // ToDo: Retrieves the direct replies to the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-
+        // ToDo: Retrieves the direct replies to the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
+    	// an error should be sent in lieu of a response.
         // Deleted replies to the tweet should be excluded from the response.
-        return null;
+    	
+    	List<Tweet> tweets = tweetRepository.findAll();
+    	List<Tweet> replies = new ArrayList<>(); 
+    	for(Tweet tweet: tweets) {
+    		if(tweet.getInReplyTo().getId() == id) {
+    			replies.add(tweet);    			
+    		}
+    	}
+    	return tweetMapper.entitiesToDtos(replies);
     }
 
     @Override
     public List<TweetResponseDto> getRepostsByTweetId(Long id) {
-        // ToDo: Retrieves the direct reposts of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-
-        //Deleted reposts of the tweet should be excluded from the response.
-        return null;
+        // ToDo: Retrieves the direct reposts of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
+    	// an error should be sent in lieu of a response.
+        // Deleted reposts of the tweet should be excluded from the response.
+    	
+    	List<Tweet> tweets = tweetRepository.findAll();
+    	List<Tweet> reposts = new ArrayList<>(); 
+    	for(Tweet tweet: tweets) {
+    		if(tweet.getRepostOf().getId() == id) {
+    			reposts.add(tweet);    			
+    		}
+    	}
+    	return tweetMapper.entitiesToDtos(reposts);
     }
 
     @Override
     public List<UserResponseDto> getMentionsByTweetId(Long id) {
-        // ToDo: Retrieves the users mentioned in the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-
+        // ToDo: Retrieves the users mentioned in the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
+    	// an error should be sent in lieu of a response.
         // Deleted users should be excluded from the response.
 
         // IMPORTANT Remember that tags and mentions must be parsed by the server!
