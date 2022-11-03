@@ -39,17 +39,17 @@ public class UserController {
 		return userService.createUser(userRequestDto);
 	}
 
-	@GetMapping("/{username}")
+	@GetMapping("/@{username}")
 	public UserResponseDto getUser(@PathVariable String username) {
 		return userService.getUser(username);
 	}
 
-	@PatchMapping("/{username}")
+	@PatchMapping("/@{username}")
 	public UserResponseDto updateUser(@PathVariable String username, @RequestBody UserRequestDto userRequestDto) {
 		return userService.updateUser(username, userRequestDto);
 	}
 
-	@DeleteMapping("/{username}")
+	@DeleteMapping("/@{username}")
 	public UserResponseDto deleteUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
 		return userService.deleteUser(username, credentialsDto);
 	}
