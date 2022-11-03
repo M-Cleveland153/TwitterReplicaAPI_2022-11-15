@@ -32,7 +32,11 @@ public class UserServiceImpl implements UserService {
 	private final CredentialsMapper credentialsMapper;
 	private final ProfileMapper profileMapper;
 
-	// Checks if username/password missing or username taken already
+	// Helper methods
+
+	// Checkers when a UserRequestDto is requested
+	// Checks Credentials of UserRequestDto whether they are missing required fields
+	// or if already exists
 	public Credentials checkCredentials(Credentials credentials) {
 		List<User> users = userRepository.findAll();
 		if (credentials.getPassword() == null || credentials.getUsername() == null) {
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		return credentials;
 	}
 
-	// Checks if email is missing
+	// Checks Profile of UserRequestDto if missing required field
 	public Profile checkProfile(Profile profile) {
 		if (profile.getEmail() == null) {
 			throw new BadRequestException("Email is required");
@@ -55,6 +59,8 @@ public class UserServiceImpl implements UserService {
 		return profile;
 	}
 
+	// Checks if User has been deleted or Does Not Exist then returns correct User
+	// if only username/CredentialsDto is requested
 	public User getUserByCredentials(Credentials credentials) {
 		List<User> users = userRepository.findAll();
 		Optional<User> optionalUser;
@@ -73,6 +79,8 @@ public class UserServiceImpl implements UserService {
 				"User with username: " + credentials.getUsername() + " and password " + credentials.getPassword());
 	}
 
+	// Checks if User has been deleted or Does Not Exist then returns correct User
+	// if only username/CredentialsDto is requested
 	public User getUserByUsername(String username) {
 		List<User> users = userRepository.findAll();
 		Optional<User> optionalUser;
@@ -91,6 +99,8 @@ public class UserServiceImpl implements UserService {
 		// At this point user does not exist
 		throw new NotFoundException("User with username: " + username + " not found");
 	}
+
+	// ENDPOINTS
 
 	@Override
 	public List<UserResponseDto> getAllUsers() {
@@ -163,13 +173,31 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void followUser(String username, CredentialsDto credentialsDto) {
-		// TODO Auto-generated method stub
+		User followedUser = getUserByUsername(username);
+		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
+
+		User followingUser = getUserByCredentials(credentials);
+
+		if (followedUser.getFollowers().contains(followingUser)) {
+			throw new BadRequestException(followedUser + " already followed by " + followingUser);
+		}
+		followedUser.getFollowers().add(followingUser);
+		userRepository.saveAndFlush(followedUser);
 
 	}
 
 	@Override
 	public void unfollowUser(String username, CredentialsDto credentialsDto) {
-		// TODO Auto-generated method stub
+		User followedUser = getUserByUsername(username);
+		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
+
+		User followingUser = getUserByCredentials(credentials);
+
+		if (!followedUser.getFollowers().contains(followingUser)) {
+			throw new BadRequestException(followedUser + " not yet followed by " + followingUser);
+		}
+		followedUser.getFollowers().remove(followingUser);
+		userRepository.saveAndFlush(followedUser);
 
 	}
 
