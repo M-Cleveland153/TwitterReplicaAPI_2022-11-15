@@ -21,7 +21,7 @@ public interface TweetService {
 
     void likeTweet(Long id, CredentialsDto credentialsDto);
     
-    TweetResponseDto replyToTweet(Long id, CredentialsDto credentialsDto);
+    TweetResponseDto replyToTweet(Long id, TweetRequestDto tweetRequestDto);
     
     TweetResponseDto repostTweet(Long id, CredentialsDto credentialsDto);
 
