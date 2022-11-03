@@ -219,7 +219,9 @@ public class TweetServiceImpl implements TweetService {
     	//	another reply to the deleted reply, the deleted reply should be excluded but the other reply should remain.
         return null;
     }
-
+    
+    
+    // NOT YET TESTED IN POSTMAN
     @Override
     public List<TweetResponseDto> getRepliesByTweetId(Long id) {
         // ToDo: Retrieves the direct replies to the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
@@ -236,6 +238,7 @@ public class TweetServiceImpl implements TweetService {
     	return tweetMapper.entitiesToDtos(replies);
     }
 
+    // NOT YET TESTED IN POSTMAN
     @Override
     public List<TweetResponseDto> getRepostsByTweetId(Long id) {
         // ToDo: Retrieves the direct reposts of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
@@ -251,14 +254,21 @@ public class TweetServiceImpl implements TweetService {
     	}
     	return tweetMapper.entitiesToDtos(reposts);
     }
-
+    
+    // IN PROGRESS
     @Override
     public List<UserResponseDto> getMentionsByTweetId(Long id) {
         // ToDo: Retrieves the users mentioned in the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
     	// an error should be sent in lieu of a response.
         // Deleted users should be excluded from the response.
-
         // IMPORTANT Remember that tags and mentions must be parsed by the server!
+    	
+    	Optional<Tweet> optionalTweet = tweetRepository.findById(id);
+    	Tweet tweet = optionalTweet.get();
+    	
+    	//List<TweetResponseDto> userMentionsList = tweet
+    	
+    	
         return null;
     }
     
