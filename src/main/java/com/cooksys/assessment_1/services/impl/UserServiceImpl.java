@@ -174,13 +174,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void followUser(String username, CredentialsDto credentialsDto) {
 		User followedUser = getUserByUsername(username);
-		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
+		List<User> userFollowers = followedUser.getFollowers();
 
+		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
 		User followingUser = getUserByCredentials(credentials);
 
-		if (followedUser.getFollowers().contains(followingUser)) {
-			throw new BadRequestException(followedUser + " already followed by " + followingUser);
+		for (User user : userFollowers) {
+			if (user.equals(followingUser)) {
+				throw new BadRequestException("User is already following " + username);
+			}
 		}
+
 		followedUser.getFollowers().add(followingUser);
 		userRepository.saveAndFlush(followedUser);
 
@@ -189,14 +193,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void unfollowUser(String username, CredentialsDto credentialsDto) {
 		User followedUser = getUserByUsername(username);
+		List<User> userFollowers = followedUser.getFollowers();
+
 		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
+		User unfollowingUser = getUserByCredentials(credentials);
 
-		User followingUser = getUserByCredentials(credentials);
+		if (!userFollowers.contains(unfollowingUser))
+			throw new BadRequestException("User was not following: " + username);
 
-		if (!followedUser.getFollowers().contains(followingUser)) {
-			throw new BadRequestException(followedUser + " not yet followed by " + followingUser);
-		}
-		followedUser.getFollowers().remove(followingUser);
+		followedUser.getFollowers().remove(unfollowingUser);
 		userRepository.saveAndFlush(followedUser);
 
 	}

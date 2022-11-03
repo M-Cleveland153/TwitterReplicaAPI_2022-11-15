@@ -59,32 +59,33 @@ public class UserController {
 		userService.followUser(username, credentialsDto);
 	}
 
-	@PostMapping("/{username}/unfollow")
+	@PostMapping("/@{username}/unfollow")
 	public void unfollowUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
 		userService.unfollowUser(username, credentialsDto);
 	}
 
-	@GetMapping("/{username}/feed")
+	@GetMapping("/@{username}/feed")
 	public List<TweetResponseDto> getUserFeed(@PathVariable String username) {
 		return userService.getUserFeed(username);
 	}
 
-	@GetMapping("/{username}/mentions")
+	@GetMapping("/@{username}/tweets")
+	public List<TweetResponseDto> getAllUserTweets(@PathVariable String username) {
+		return userService.getAllUserTweets(username);
+	}
+	
+	@GetMapping("/@{username}/mentions")
 	public List<TweetResponseDto> getAllUserMentions(@PathVariable String username) {
 		return userService.getAllUserMentions(username);
 	}
 
-	@GetMapping("/{username}/tweets")
-	public List<TweetResponseDto> getAllUserTweets(@PathVariable String username) {
-		return userService.getAllUserTweets(username);
-	}
 
-	@GetMapping("/{username}/followers")
+	@GetMapping("/@{username}/followers")
 	public List<UserResponseDto> getAllUserFollowers(@PathVariable String username) {
 		return userService.getAllUserFollowers(username);
 	}
 
-	@GetMapping("/{username}/following")
+	@GetMapping("/@{username}/following")
 	public List<UserResponseDto> getAllUsersFollowed(@PathVariable String username) {
 		return userService.getAllUsersFollowed(username);
 	}
