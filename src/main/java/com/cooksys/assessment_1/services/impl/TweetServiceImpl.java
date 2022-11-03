@@ -1,14 +1,29 @@
 package com.cooksys.assessment_1.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.cooksys.assessment_1.dtos.ContextDto;
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.HashtagResponseDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
+import com.cooksys.assessment_1.entities.Credentials;
+import com.cooksys.assessment_1.entities.Hashtag;
+import com.cooksys.assessment_1.entities.Tweet;
+import com.cooksys.assessment_1.entities.User;
+import com.cooksys.assessment_1.exceptions.NotFoundException;
+import com.cooksys.assessment_1.mappers.CredentialsMapper;
+import com.cooksys.assessment_1.mappers.HashtagMapper;
 import com.cooksys.assessment_1.mappers.TweetMapper;
+import com.cooksys.assessment_1.mappers.UserMapper;
+import com.cooksys.assessment_1.repositories.HashtagRepository;
 import com.cooksys.assessment_1.repositories.TweetRepository;
+import com.cooksys.assessment_1.repositories.UserRepository;
 import com.cooksys.assessment_1.services.TweetService;
 
 import org.springframework.stereotype.Service;
@@ -20,31 +35,122 @@ import lombok.RequiredArgsConstructor;
 public class TweetServiceImpl implements TweetService {
 
 	private final TweetMapper tweetMapper;
+    private final UserMapper userMapper;
+    private final CredentialsMapper credentialsMapper;
+    private final HashtagMapper hashtagMapper;
+
 	private final TweetRepository tweetRepository;
+    private final UserRepository userRepository;
+    private final HashtagRepository hashtagRepository;
+
+    private Tweet getTweet(Long id) {
+        Optional<Tweet> optionalTweet = tweetRepository.findById(id);
+        if (optionalTweet.isEmpty()) {
+            throw new NotFoundException("Tweet of ID: " + id + " not found.");
+        }
+        return optionalTweet.get();
+      }
+
+    private List<Tweet> removeDeletedTweets(List<Tweet> tweets) {
+        List<Tweet> tweetsWithNoDeletes = new ArrayList<>();
+        for (Tweet tweet : tweets)
+        {
+            if (tweet.isDeleted() == false)
+            {
+                tweetsWithNoDeletes.add(tweet);
+            }
+        }
+        return tweetsWithNoDeletes;
+    }
 	
     @Override
     public List<TweetResponseDto> getAllTweets() {
-        // List<Tweet> allTweets = tweetRepository.findAll();
-        // allTweets.sort((e1, e2) -> e1.getPosted().compareTo(e2.getPosted()));
-        // return tweetMapper.entitiesToDtos(allTweets);
+        // Retrieve all tweets from the repo, and remove deleted tweets
+        List<Tweet> allTweets = removeDeletedTweets(tweetRepository.findAll());
 
-        return null;
+        // Sort remaining tweets in reverse chronological order
+        allTweets.sort((e1, e2) -> e2.getPosted().compareTo(e1.getPosted()));
+        return tweetMapper.entitiesToDtos(allTweets);
     }
 
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
-        // ToDo: Because this always creates a simple tweet, it must have a content property and may not have inReplyTo or repostOf properties.
+        // Check credentials against the repo and grab user if it exists
+        Credentials incomingCredentials = credentialsMapper.dtoToEntity(tweetRequestDto.getCredentials());
+        User user = userRepository.findByCredentials(incomingCredentials);
+        if (user == null) throw new NotFoundException("Incorrect username or password.");
 
-        // Creates a new simple tweet, with the author set to the user identified by the credentials in the request body. If the given credentials do not match an active user in the database, an error should be sent in lieu of a response.
+        // Create base tweet
+        Tweet createdTweet = new Tweet();
+        createdTweet.setAuthor(user);
+        createdTweet.setContent(tweetRequestDto.getContent());
 
-        // IMPORTANT: when a tweet with content is created, the server must process the tweet’s content for @{username} mentions and #{hashtag} tags. There is no way to create hashtags or create mentions from the API, so this must be handled automatically!
-        return null;
+        // Check for Hashtags in the content
+        if (createdTweet.getContent().contains("#"))
+        {
+            // Use regex to isolate hashtags
+            String patternStr = "(?:\\|A)[##]+([A-Za-z0-9-_]+)";
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(createdTweet.getContent());
+
+            // create List<String> to populate with hashtags found
+            List<String> hashtagsInContent = new ArrayList<>();
+            while (matcher.find()) {
+                hashtagsInContent.add(matcher.group().replace("#", ""));
+            }
+
+            for (String hashtag : hashtagsInContent)
+            {
+                // Check hashtags against the hashtagRepo, and add if they don't exist
+                Hashtag newHashtag = hashtagRepository.findByLabel(hashtag);
+
+                if (newHashtag == null)
+                {
+                    newHashtag = new Hashtag();
+                    newHashtag.setLabel(hashtag);
+                    hashtagRepository.saveAndFlush(newHashtag);
+                }
+
+                List<Hashtag> existingHashtags = createdTweet.getHashtags();
+                existingHashtags.add(newHashtag);
+                createdTweet.setHashtags(existingHashtags);
+            }
+        }
+
+        // Check for user mentions in the content
+        if (createdTweet.getContent().contains("@"))
+        {
+            // Use regex to isolate user mentions
+            String patternStr = "(?:\\s|\\A)[@]+([A-Za-z0-9-_]+)";
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(createdTweet.getContent());
+
+            // create List<String> to populate with mentioned users found
+            List<String> userMentionsInContent = new ArrayList<>();
+            while (matcher.find()) {
+                userMentionsInContent.add(matcher.group().replace("@", ""));
+            }
+
+            for (String username : userMentionsInContent)
+            {
+                // Check username against the userRepo to see if it exists, grab if so
+                User userFromRepo = userRepository.findByCredentialsUsername(username);
+
+                if (userFromRepo != null)
+                {
+                    List<User> existingMentions = createdTweet.getMentionedUsers();
+                    existingMentions.add(userFromRepo);
+                    createdTweet.setMentionedUsers(existingMentions);
+                }
+            }
+        }
+        
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(createdTweet));
     }
 
     @Override
     public TweetResponseDto getTweetById(Long id) {
-        // ToDo: Retrieves a tweet with a given id. If no such tweet exists, or the given tweet is deleted, an error should be sent in lieu of a response.
-        return null;
+        return tweetMapper.entityToDto(getTweet(id));
     }
 
     @Override
@@ -82,23 +188,24 @@ public class TweetServiceImpl implements TweetService {
         // The response should contain the newly-created tweet.
         return null;
     }
-            
-    // Pending access to HashtagResponseDto
 
-    // @Override
-    // public List<HashtagResponseDto> getAllHashtagsByTweetId(Long id) {
-    //     // ToDo: Retrieves the tags associated with the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-    
-    //     // IMPORTANT Remember that tags and mentions must be parsed by the server!
-    //     return null;
-    // }
+    @Override
+    public List<HashtagResponseDto> getAllHashtagsByTweetId(Long id) {
+        return hashtagMapper.entitiesToDtos(getTweet(id).getHashtags());
+    }
 
     @Override
     public List<UserResponseDto> getAllLikesByTweetId(Long id) {
-        // ToDo: Retrieves the active users who have liked the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, an error should be sent in lieu of a response.
-
         // Deleted users should be excluded from the response.
-        return null;
+        List<User> userLikes = new ArrayList<>();
+        for (User user : getTweet(id).getLikedByUsers())
+        {
+            if (user.isDeleted() == false)
+            {
+                userLikes.add(user);
+            }
+        }
+        return userMapper.entitiesToDtos(userLikes);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cooksys.assessment_1.dtos.ContextDto;
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.HashtagResponseDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
@@ -24,8 +25,7 @@ public interface TweetService {
     
     TweetResponseDto repostTweet(Long id, CredentialsDto credentialsDto);
 
-    // Pending access to HashtagResponseDto
-    // List<HashtagResponseDto> getAllHashtagsByTweetId(Long id);
+    List<HashtagResponseDto> getAllHashtagsByTweetId(Long id);
 
     List<UserResponseDto> getAllLikesByTweetId(Long id);
 

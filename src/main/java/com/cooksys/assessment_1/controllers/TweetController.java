@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.assessment_1.dtos.ContextDto;
 import com.cooksys.assessment_1.dtos.CredentialsDto;
+import com.cooksys.assessment_1.dtos.HashtagResponseDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
@@ -61,12 +62,10 @@ public class TweetController {
         return tweetService.repostTweet(id, credentialsDto);
     }
 
-    // Pending access to HashtagReponseDto
-
-    // @GetMapping("/{id}/tags")
-    // public List<HashtagResponseDto> getAllHashtagsByTweetId(@PathVariable Long id) {
-    //     return tweetService.getAllHashtagsByTweetId(id);
-    // }
+    @GetMapping("/{id}/tags")
+    public List<HashtagResponseDto> getAllHashtagsByTweetId(@PathVariable Long id) {
+        return tweetService.getAllHashtagsByTweetId(id);
+    }
 
     @GetMapping("/{id}/likes")
     public List<UserResponseDto> getAllLikesByTweetId(@PathVariable Long id) {

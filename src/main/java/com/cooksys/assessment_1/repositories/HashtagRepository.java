@@ -12,4 +12,5 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long>{
 	
 	Optional<Hashtag> findByLabelAndDeletedFalse(String label);
 
+	Hashtag findByLabel(String label);
 }
