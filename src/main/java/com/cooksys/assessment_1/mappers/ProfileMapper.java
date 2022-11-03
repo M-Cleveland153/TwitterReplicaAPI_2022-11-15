@@ -8,5 +8,5 @@ import com.cooksys.assessment_1.entities.Profile;
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
 	
-	Profile requestDtoToEntity(ProfileDto profileDto);
+	Profile dtoToEntity(ProfileDto profileDto);
 }
