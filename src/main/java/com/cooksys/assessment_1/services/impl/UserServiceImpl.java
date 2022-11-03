@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 				throw new BadRequestException("This username already exists");
 			}
 		}
-		
+
 		return credentials;
 	}
 
@@ -53,6 +53,24 @@ public class UserServiceImpl implements UserService {
 			throw new BadRequestException("Email is required");
 		}
 		return profile;
+	}
+
+	public User getUserByCredentials(Credentials credentials) {
+		List<User> users = userRepository.findAll();
+		Optional<User> optionalUser;
+
+		for (User user : users) {
+			if (user.getCredentials().equals(credentials)) {
+				if (user.isDeleted()) {
+					throw new BadRequestException("This user has been deleted");
+				}
+				Long id = user.getId();
+				optionalUser = userRepository.findByIdAndDeletedFalse(id);
+				return optionalUser.get();
+			}
+		}
+		throw new NotFoundException(
+				"User with username: " + credentials.getUsername() + " and password " + credentials.getPassword());
 	}
 
 	public User getUserByUsername(String username) {
@@ -82,9 +100,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto createUser(UserRequestDto userRequestDto) {
 		User userToCreate = userMapper.requestDtoToEntity(userRequestDto);
+		List<User> users = userRepository.findAll();
 
 		CredentialsDto userCredentialsDto = userRequestDto.getCredentials();
 		Credentials userCredentials = credentialsMapper.dtoToEntity(userCredentialsDto);
+
+		for (User user : users) {
+			if (user.getCredentials().equals(userCredentials) && user.isDeleted() == true) {
+				user.setDeleted(false);
+				userToCreate = user;
+				return userMapper.entityToDto(userRepository.saveAndFlush(userToCreate));
+			} else if (user.getCredentials().getUsername().equals(userCredentials.getUsername())) {
+				throw new BadRequestException("Username already exists");
+			}
+		}
 
 		ProfileDto userProfileDto = userRequestDto.getProfile();
 		Profile userProfile = profileMapper.dtoToEntity(userProfileDto);
@@ -108,11 +137,11 @@ public class UserServiceImpl implements UserService {
 	public UserResponseDto updateUser(String username, UserRequestDto userRequestDto) {
 		User userToUpdate = getUserByUsername(username);
 		Credentials credentials = credentialsMapper.dtoToEntity(userRequestDto.getCredentials());
-		
-		if(!userToUpdate.getCredentials().equals(credentials)) {
+
+		if (!userToUpdate.getCredentials().equals(credentials)) {
 			throw new BadRequestException("Given credentials don't match designated user's credentials");
 		}
-		
+
 		Profile newProfile = profileMapper.dtoToEntity(userRequestDto.getProfile());
 		userToUpdate.setProfile(newProfile);
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
@@ -122,14 +151,26 @@ public class UserServiceImpl implements UserService {
 	public UserResponseDto deleteUser(String username, CredentialsDto credentialsDto) {
 		User userToDelete = getUserByUsername(username);
 		Credentials credentials = credentialsMapper.dtoToEntity(credentialsDto);
-		
-		if(!userToDelete.getCredentials().equals(credentials)) {
+
+		if (!userToDelete.getCredentials().equals(credentials)) {
 			throw new BadRequestException("Given credentials don't match designated user's credentials");
 		}
-		
+
 		userToDelete.setDeleted(true);
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToDelete));
-		
+
+	}
+
+	@Override
+	public void followUser(String username, CredentialsDto credentialsDto) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void unfollowUser(String username, CredentialsDto credentialsDto) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

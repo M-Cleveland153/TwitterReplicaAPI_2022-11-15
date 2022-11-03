@@ -54,15 +54,15 @@ public class UserController {
 		return userService.deleteUser(username, credentialsDto);
 	}
 
-//	@PostMapping("/{username}/follow")
-//	public void followUser(@RequestBody CredentialsDto credentialsDto) {
-//		return userService.followUser(credentialsDto);
-//	}
+	@PostMapping("/@{username}/follow")
+	public void followUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
+		userService.followUser(username, credentialsDto);
+	}
 
-//	@PostMapping("/{username}/unfollow")
-//	public void unfollowUser(@RequestBody CredentialsDto credentialsDto) {
-//		return userService.unfollowUser(credentialsDto);
-//	}
+	@PostMapping("/{username}/unfollow")
+	public void unfollowUser(@PathVariable String username, @RequestBody CredentialsDto credentialsDto) {
+		userService.unfollowUser(username, credentialsDto);
+	}
 
 	@GetMapping("/{username}/feed")
 	public List<TweetResponseDto> getUserFeed(@PathVariable String username) {
