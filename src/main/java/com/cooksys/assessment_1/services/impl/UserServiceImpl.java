@@ -242,8 +242,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserResponseDto> getAllUsersFollowed(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User userWithFollowings = getUserByUsername(username);
+		List<User> userFollowings = userWithFollowings.getFollowing();
+		List<User> newUserFollowings = new ArrayList<>();
+		
+		for(User user : userFollowings) {
+			if(!user.isDeleted()) {
+				newUserFollowings.add(user);
+			}
+		}
+		
+		return userMapper.entitiesToDtos(userRepository.saveAllAndFlush(userFollowings));
 	}
 
 }
