@@ -88,4 +88,6 @@ public class UserController {
 	public List<UserResponseDto> getAllUsersFollowed(@PathVariable String username) {
 		return userService.getAllUsersFollowed(username);
 	}
+	
+	
 }
