@@ -1,8 +1,12 @@
 package com.cooksys.assessment_1.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -264,6 +268,13 @@ public class TweetServiceImpl implements TweetService {
         return userMapper.entitiesToDtos(userLikes);
     }
 
+//		CONTEXT    
+//    The reply context of a tweet. The before property represents the chain of replies that led to the target tweet, 
+//    and the after property represents the chain of replies that followed the target tweet.
+//	  The chains should be in chronological order, and the after chain should include all replies of replies, 
+//    meaning that all branches of replies must be flattened into a single chronological list to fully satisfy the requirements.
+    
+    // STATUS: (11/3, WORKING BUT MISSING ERROR HANDLING) 
     @Override
     public ContextDto getContextByTweetId(Long id) {
         // 	ToDo: Retrieves the context of the tweet with the given id. If that tweet is deleted or otherwise doesn’t exist, 
@@ -271,7 +282,43 @@ public class TweetServiceImpl implements TweetService {
         // 	IMPORTANT: While deleted tweets should not be included in the before and after properties of the result, 
     	//	transitive replies should. What that means is that if a reply to the target of the context is deleted, but there’s 
     	//	another reply to the deleted reply, the deleted reply should be excluded but the other reply should remain.
-        return null;
+    	//	RESPONSE: 'Context'
+    	
+    	Optional<Tweet> optionalTargetTweet = tweetRepository.findById(id);
+    	Tweet targetTweetEntity = optionalTargetTweet.get();
+    	
+    	TweetResponseDto targetTweetResponseDto = tweetMapper.entityToDto(optionalTargetTweet.get());
+    	ContextDto contextDto = new ContextDto();
+    	contextDto.setTarget(targetTweetResponseDto);
+    	
+    	
+    	//get "before" tweets
+    	List<Tweet> beforeTweetEntities = new ArrayList<>();
+    	Tweet newTargetTweetEntity = targetTweetEntity; 
+    	while(newTargetTweetEntity.getInReplyTo() != null) {
+    		newTargetTweetEntity = newTargetTweetEntity.getInReplyTo();
+    		beforeTweetEntities.add(newTargetTweetEntity);    		
+    	}
+    	Collections.sort(beforeTweetEntities, Comparator.comparing(Tweet::getPosted));
+    	List<TweetResponseDto> beforeTweetResponseDtos = tweetMapper.entitiesToDtos(beforeTweetEntities);
+    	contextDto.setBefore(beforeTweetResponseDtos);
+    	
+    	//get "after" tweets
+    	List<Tweet> directRepliesTweets = targetTweetEntity.getReplies();
+    	Set<Tweet> replySet1 = new HashSet<>(directRepliesTweets);
+    	Set<Tweet> replySet2 = new HashSet<>();
+    	while(replySet1 != replySet2) {
+    		replySet2 = replySet1;
+    		for(Tweet reply: replySet1) {
+    			replySet1.addAll(reply.getReplies());
+    		}
+    	}
+    	List<Tweet> afterTweetEntities = new ArrayList<>(replySet1);
+    	Collections.sort(afterTweetEntities, Comparator.comparing(Tweet::getPosted));
+    	List<TweetResponseDto> afterTweetResponseDtoList = tweetMapper.entitiesToDtos(afterTweetEntities);
+    	contextDto.setAfter(afterTweetResponseDtoList);    	
+    	
+        return contextDto;
     }
     
     
