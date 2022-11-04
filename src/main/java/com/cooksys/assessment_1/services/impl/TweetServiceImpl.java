@@ -133,14 +133,13 @@ public class TweetServiceImpl implements TweetService {
             List<String> userMentionsInContent = new ArrayList<>();
             while (matcher.find()) userMentionsInContent.add(matcher.group().replace("@", ""));
 
-            // Check hashtags against the hashtagRepo, and add if they don't exist
             for (String username : userMentionsInContent)
             {
                 // Check username against the userRepo to see if it exists, grab if so
                 User userFromRepo = userRepository.findByCredentialsUsername(username);
 
                 // If the user isn't null AND deleted (I think this helps prevent null errors when checking
-                // the user.isDeleted() if user is null?) add to createdTweet mentioned users
+                // the user.isDeleted() if user is null?)
                 if (userFromRepo != null && userFromRepo.isDeleted() == false)
                 {
                     // Add user to the tweet's mentioned users list, if list is null create a new list
@@ -335,9 +334,8 @@ public class TweetServiceImpl implements TweetService {
 		Tweet targetTweet = throwExceptionIfTweetDeleted(getTweet(id));
 		List<User> tweetMentions = new ArrayList<>();
 		for (User user : targetTweet.getMentionedUsers())
-		{
 			if (!user.isDeleted()) tweetMentions.add(user);
-		}
+            
         return userMapper.entitiesToDtos(tweetMentions);
 	}
 
