@@ -6,12 +6,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.cooksys.assessment_1.dtos.CredentialsDto;
 import com.cooksys.assessment_1.dtos.ProfileDto;
@@ -52,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	// or if already exists
 	public Credentials checkCredentials(Credentials credentials) {
 		List<User> users = userRepository.findAll();
-		if(credentials == null) {
+		if (credentials == null) {
 			throw new BadRequestException("Missing username and password");
 		}
 		if (credentials.getPassword() == null || credentials.getUsername() == null) {
@@ -69,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
 	// Checks Profile of UserRequestDto if missing required field
 	public Profile checkProfile(Profile profile) {
-		if(profile == null) {
+		if (profile == null) {
 			throw new BadRequestException("Need to fill in a profile");
 		}
 		if (profile.getEmail() == null) {
@@ -77,7 +73,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return profile;
 	}
-	
+
 	// Checks if User has been deleted or Does Not Exist then returns correct User
 	// if only username/CredentialsDto is requested
 	public User getUserByCredentials(Credentials credentials) {
@@ -94,8 +90,7 @@ public class UserServiceImpl implements UserService {
 				return optionalUser.get();
 			}
 		}
-		throw new NotFoundException(
-				"Given credentials don't match any user's credentials");
+		throw new NotFoundException("Given credentials don't match any user's credentials");
 	}
 
 	// Checks if User has been deleted or Does Not Exist then returns correct User
@@ -133,9 +128,9 @@ public class UserServiceImpl implements UserService {
 
 		CredentialsDto userCredentialsDto = userRequestDto.getCredentials();
 		Credentials userCredentials = credentialsMapper.dtoToEntity(userCredentialsDto);
-		
+
 		checkCredentials(userCredentials);
-		
+
 		for (User user : users) {
 			if (user.getCredentials().equals(userCredentials) && user.isDeleted() == true) {
 				user.setDeleted(false);
@@ -145,7 +140,7 @@ public class UserServiceImpl implements UserService {
 				user.getProfile().setPhone(userToCreate.getProfile().getPhone());
 				userToCreate = user;
 				return userMapper.entityToDto(userRepository.saveAndFlush(userToCreate));
-			} 
+			}
 		}
 
 		ProfileDto userProfileDto = userRequestDto.getProfile();
@@ -175,22 +170,22 @@ public class UserServiceImpl implements UserService {
 		}
 
 		Profile newProfile = profileMapper.dtoToEntity(userRequestDto.getProfile());
-		if(newProfile == null) {
+		if (newProfile == null) {
 			throw new BadRequestException("Profile missing");
 		}
-		if(newProfile.getEmail() == null) {
+		if (newProfile.getEmail() == null) {
 			newProfile.setEmail(userToUpdate.getProfile().getEmail());
 		}
-		if(newProfile.getFirstName() == null) {
+		if (newProfile.getFirstName() == null) {
 			newProfile.setFirstName(userToUpdate.getProfile().getFirstName());
 		}
-		if(newProfile.getLastName() == null) {
+		if (newProfile.getLastName() == null) {
 			newProfile.setLastName(userToUpdate.getProfile().getLastName());
 		}
-		if(newProfile.getPhone() == null) {
+		if (newProfile.getPhone() == null) {
 			newProfile.setPhone(userToUpdate.getProfile().getPhone());
 		}
-		
+
 		userToUpdate.setProfile(newProfile);
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
 	}
@@ -306,7 +301,7 @@ public class UserServiceImpl implements UserService {
 				newUserTweets.add(tweet);
 			}
 		}
-		
+
 		newUserTweets = new ArrayList<>(new HashSet<>(newUserTweets));
 		Collections.sort(newUserTweets, Comparator.comparing(Tweet::getPosted));
 		Collections.reverse(newUserTweets);

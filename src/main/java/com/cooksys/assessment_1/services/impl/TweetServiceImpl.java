@@ -203,7 +203,10 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweet = throwExceptionIfTweetDeleted(getTweet(id));
         User user = throwExceptionIfUserNullOrDeleted(userRepository.findByCredentials(credentialsMapper.dtoToEntity(credentialsDto)));
 
-        user.getLikedTweets().add(tweet);
+        if(!user.getLikedTweets().contains(tweet)) {
+        	user.getLikedTweets().add(tweet);
+        }
+        
         userRepository.saveAndFlush(user);
     }
         
