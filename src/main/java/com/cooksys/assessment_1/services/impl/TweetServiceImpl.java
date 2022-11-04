@@ -172,6 +172,10 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet createdTweet = tweetMapper.DtoToEntity(tweetRequestDto);
         createdTweet.setAuthor(user);
+
+        // Content is required for this tweet
+        if (createdTweet.getContent() == null || createdTweet.getContent().length() == 0)
+            throw new BadRequestException("Tweet must contain content.");
         
         // Parse the content for hashtags and mentions, then save and flush
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(parseHashtagsAndMentions(createdTweet)));
