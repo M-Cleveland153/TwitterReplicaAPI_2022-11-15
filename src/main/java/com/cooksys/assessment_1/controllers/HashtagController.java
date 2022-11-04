@@ -29,6 +29,6 @@ public class HashtagController {
 	public List<TweetResponseDto> getTweetsByHashtag(@PathVariable String label){
 		return hashtagService.getTweetsByHashtag(label);
 	}
-	
+		
 
 }

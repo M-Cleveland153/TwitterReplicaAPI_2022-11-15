@@ -30,7 +30,6 @@ public class ValidateServiceImpl implements ValidateService {
 		List<Hashtag> hashtags =  hashtagRepository.findAll();
 		String checkTagString = "#" + label;
 		for(Hashtag hashtag: hashtags) {
-			System.out.println(hashtag.getLabel() + " " + label);
 			if(hashtag.getLabel().equals(checkTagString)) {
 				return true;
 			}
