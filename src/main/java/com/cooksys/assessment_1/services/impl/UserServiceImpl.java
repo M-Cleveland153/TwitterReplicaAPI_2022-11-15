@@ -267,6 +267,10 @@ public class UserServiceImpl implements UserService {
 				newUserTweets.add(tweet);
 			}
 		}
+		
+		newUserTweets = new ArrayList<>(new HashSet<>(newUserTweets));
+		Collections.sort(newUserTweets, Comparator.comparing(Tweet::getPosted));
+		Collections.reverse(newUserTweets);
 
 		return tweetMapper.entitiesToDtos(tweetRepository.saveAllAndFlush(newUserTweets));
 	}
