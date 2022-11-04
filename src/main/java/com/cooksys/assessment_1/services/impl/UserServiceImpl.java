@@ -1,10 +1,17 @@
 package com.cooksys.assessment_1.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.cooksys.assessment_1.dtos.CredentialsDto;
 import com.cooksys.assessment_1.dtos.ProfileDto;
@@ -37,7 +44,6 @@ public class UserServiceImpl implements UserService {
 	private final ProfileMapper profileMapper;
 	private final TweetMapper tweetMapper;
 	private final TweetRepository tweetRepository;
-	
 
 	// Helper methods
 
@@ -213,10 +219,41 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	// "/@{username}/feed"
+	// Retrieves all (non-deleted) tweets authored by the user with the given
+	// username,
+	// as well as all (non-deleted) tweets authored by users the given user is
+	// following.
+	// This includes simple tweets, reposts, and replies. The tweets should appear
+	// in
+	// reverse-chronological order. If no active user with that username exists
+	// (deleted
+	// or never created), an error should be sent in lieu of a response.
 	@Override
 	public List<TweetResponseDto> getUserFeed(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User targetUser = userRepository.findByCredentialsUsername(username);
+		List<User> users = targetUser.getFollowing();
+		users.add(targetUser);
+		List<Tweet> targetUserTweets = new ArrayList<>();
+
+		for (User user : users) {
+			targetUserTweets.addAll(user.getTweets());
+		}
+
+		List<Tweet> feedList = new ArrayList<>();
+		feedList.addAll(targetUserTweets);
+
+		for (Tweet tweet : targetUserTweets) {
+			feedList.addAll(tweet.getReplies());
+			feedList.addAll(tweet.getReposts());
+
+		}
+
+		feedList = new ArrayList<>(new HashSet<>(feedList));
+		Collections.sort(feedList, Comparator.comparing(Tweet::getPosted));
+		Collections.reverse(feedList);
+
+		return tweetMapper.entitiesToDtos(feedList);
 	}
 
 	@Override
@@ -224,20 +261,45 @@ public class UserServiceImpl implements UserService {
 		User userWithTweets = getUserByUsername(username);
 		List<Tweet> userTweets = userWithTweets.getTweets();
 		List<Tweet> newUserTweets = new ArrayList<>();
-		
-		for(Tweet tweet : userTweets) {
-			if(!tweet.isDeleted()) {
+
+		for (Tweet tweet : userTweets) {
+			if (!tweet.isDeleted()) {
 				newUserTweets.add(tweet);
 			}
 		}
-		
+
 		return tweetMapper.entitiesToDtos(tweetRepository.saveAllAndFlush(newUserTweets));
 	}
 
+	// ("/@{username}/mentions")
+	// Retrieves all (non-deleted) tweets in which the user with the given username
+	// is mentioned.
+	// The tweets should appear in reverse-chronological order. If no active user
+	// with that username
+	// exists, an error should be sent in lieu of a response.
+	// A user is considered "mentioned" by a tweet if the tweet has content and the
+	// user's username
+	// appears in that content following a @.
+	// Response: ['Tweet']
 	@Override
 	public List<TweetResponseDto> getAllUserMentions(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		User targetUser = userRepository.findByCredentialsUsername(username);
+		List<Tweet> allTweets = tweetRepository.findAll();
+
+		List<Tweet> mentionsTweetList = new ArrayList<>();
+		for (Tweet tweet : allTweets) {
+			List<User> mentionedUsers = tweet.getMentionedUsers();
+			if (mentionedUsers.contains(targetUser)) {
+				mentionsTweetList.add(tweet);
+			}
+
+		}
+
+		mentionsTweetList = new ArrayList<>(new HashSet<>(mentionsTweetList));
+		Collections.sort(mentionsTweetList, Comparator.comparing(Tweet::getPosted));
+		Collections.reverse(mentionsTweetList);
+
+		return tweetMapper.entitiesToDtos(mentionsTweetList);
 	}
 
 	@Override
@@ -245,13 +307,13 @@ public class UserServiceImpl implements UserService {
 		User userWithFollowers = getUserByUsername(username);
 		List<User> userFollowers = userWithFollowers.getFollowers();
 		List<User> newUserFollowers = new ArrayList<>();
-		
-		for(User user : userFollowers) {
-			if(!user.isDeleted()) {
+
+		for (User user : userFollowers) {
+			if (!user.isDeleted()) {
 				newUserFollowers.add(user);
 			}
 		}
-		
+
 		return userMapper.entitiesToDtos(userRepository.saveAllAndFlush(newUserFollowers));
 	}
 
@@ -260,13 +322,13 @@ public class UserServiceImpl implements UserService {
 		User userWithFollowings = getUserByUsername(username);
 		List<User> userFollowings = userWithFollowings.getFollowing();
 		List<User> newUserFollowings = new ArrayList<>();
-		
-		for(User user : userFollowings) {
-			if(!user.isDeleted()) {
+
+		for (User user : userFollowings) {
+			if (!user.isDeleted()) {
 				newUserFollowings.add(user);
 			}
 		}
-		
+
 		return userMapper.entitiesToDtos(userRepository.saveAllAndFlush(userFollowings));
 	}
 
