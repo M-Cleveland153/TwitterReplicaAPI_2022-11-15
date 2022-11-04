@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 			throw new BadRequestException("Missing username or password");
 		}
 		for (User user : users) {
-			if (user.getCredentials().getUsername().equals(credentials.getUsername())) {
+			if (user.getCredentials().getUsername().equals(credentials.getUsername()) && !user.isDeleted()) {
 				throw new BadRequestException("This username already exists");
 			}
 		}
@@ -139,11 +139,13 @@ public class UserServiceImpl implements UserService {
 		for (User user : users) {
 			if (user.getCredentials().equals(userCredentials) && user.isDeleted() == true) {
 				user.setDeleted(false);
+				user.getProfile().setFirstName(userToCreate.getProfile().getFirstName());
+				user.getProfile().setLastName(userToCreate.getProfile().getLastName());
+				user.getProfile().setEmail(userToCreate.getProfile().getEmail());
+				user.getProfile().setPhone(userToCreate.getProfile().getPhone());
 				userToCreate = user;
 				return userMapper.entityToDto(userRepository.saveAndFlush(userToCreate));
-			} else if (user.getCredentials().getUsername().equals(userCredentials.getUsername())) {
-				throw new BadRequestException("Username already exists");
-			}
+			} 
 		}
 
 		ProfileDto userProfileDto = userRequestDto.getProfile();
