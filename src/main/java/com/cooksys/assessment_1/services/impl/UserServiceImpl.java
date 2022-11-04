@@ -52,6 +52,9 @@ public class UserServiceImpl implements UserService {
 	// or if already exists
 	public Credentials checkCredentials(Credentials credentials) {
 		List<User> users = userRepository.findAll();
+		if(credentials == null) {
+			throw new BadRequestException("Missing username and password");
+		}
 		if (credentials.getPassword() == null || credentials.getUsername() == null) {
 			throw new BadRequestException("Missing username or password");
 		}
@@ -66,6 +69,9 @@ public class UserServiceImpl implements UserService {
 
 	// Checks Profile of UserRequestDto if missing required field
 	public Profile checkProfile(Profile profile) {
+		if(profile == null) {
+			throw new BadRequestException("Need to fill in a profile");
+		}
 		if (profile.getEmail() == null) {
 			throw new BadRequestException("Email is required");
 		}
@@ -89,7 +95,7 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		throw new NotFoundException(
-				"User with username: " + credentials.getUsername() + " and password " + credentials.getPassword());
+				"Given credentials don't match any user's credentials");
 	}
 
 	// Checks if User has been deleted or Does Not Exist then returns correct User
@@ -127,7 +133,9 @@ public class UserServiceImpl implements UserService {
 
 		CredentialsDto userCredentialsDto = userRequestDto.getCredentials();
 		Credentials userCredentials = credentialsMapper.dtoToEntity(userCredentialsDto);
-
+		
+		checkCredentials(userCredentials);
+		
 		for (User user : users) {
 			if (user.getCredentials().equals(userCredentials) && user.isDeleted() == true) {
 				user.setDeleted(false);
@@ -141,7 +149,6 @@ public class UserServiceImpl implements UserService {
 		ProfileDto userProfileDto = userRequestDto.getProfile();
 		Profile userProfile = profileMapper.dtoToEntity(userProfileDto);
 
-		checkCredentials(userCredentials);
 		checkProfile(userProfile);
 
 		userToCreate.setCredentials(userCredentials);
