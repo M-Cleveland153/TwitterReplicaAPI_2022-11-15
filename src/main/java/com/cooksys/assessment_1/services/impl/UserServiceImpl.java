@@ -226,18 +226,9 @@ public class UserServiceImpl implements UserService {
 	// following. This includes simple tweets, reposts, and replies. The tweets
 	// should appear
 	// in reverse-chronological order.
-	
-	//	COMPLETE
-	// [IMPLEMENTED] If no active user with that username exists
-	// (deleted or never created), an error should be sent in lieu of a response.
-	// [IMPLEMENTED] nondeleted tweets
 	@Override
 	public List<TweetResponseDto> getUserFeed(String username) {
-		Optional<User> optionalTargetUser = Optional.ofNullable(userRepository.findByCredentialsUsername(username));
-		if (optionalTargetUser.isEmpty()) {
-			throw new NotFoundException("No user found with username: " + username);
-		}
-		User targetUser = optionalTargetUser.get();
+		User targetUser = getUserByUsername(username);
 		List<User> users = targetUser.getFollowing();
 		users.add(targetUser);
 
@@ -308,19 +299,9 @@ public class UserServiceImpl implements UserService {
 	// user's username
 	// appears in that content following a @.
 	// Response: ['Tweet']
-
-	// COMPLETE
-	// [IMPLEMENTED] non-deleted
-	// [IMPLEMENTED] If no active user with that username exists, an error should be
-	// sent in lieu of a response.
-
 	@Override
 	public List<TweetResponseDto> getAllUserMentions(String username) {
-		Optional<User> optionalTargetUser = Optional.ofNullable(userRepository.findByCredentialsUsername(username));
-		if (optionalTargetUser.isEmpty()) {
-			throw new NotFoundException("No user found with username: " + username);
-		}
-		User targetUser = optionalTargetUser.get();
+		User targetUser = getUserByUsername(username);
 		List<Tweet> allTweets = tweetRepository.findAllByDeletedFalse();
 		List<Tweet> mentionsTweetList = new ArrayList<>();
 		for (Tweet tweet : allTweets) {
