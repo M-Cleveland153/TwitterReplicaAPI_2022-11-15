@@ -244,7 +244,12 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<HashtagResponseDto> getAllHashtagsByTweetId(Long id) {
-        Tweet tweet = throwExceptionIfTweetDeleted(getTweet(id));
+    	Optional<Tweet> optionalTweet = tweetRepository.findByIdAndDeletedFalse(id);
+    	if(optionalTweet.isEmpty()) {
+    		throw new NotFoundException("No tweet found with id: " + id);
+    	}
+    	Tweet targetTweet = optionalTweet.get();
+        Tweet tweet = throwExceptionIfTweetDeleted(targetTweet);
         return hashtagMapper.entitiesToDtos(tweet.getHashtags());
     }
 

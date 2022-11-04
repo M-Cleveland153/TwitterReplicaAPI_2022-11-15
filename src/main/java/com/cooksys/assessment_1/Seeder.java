@@ -1,22 +1,22 @@
-package com.cooksys.assessment_1;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import com.cooksys.assessment_1.entities.Credentials;
-import com.cooksys.assessment_1.entities.Hashtag;
-import com.cooksys.assessment_1.entities.Profile;
-import com.cooksys.assessment_1.entities.Tweet;
-import com.cooksys.assessment_1.entities.User;
-import com.cooksys.assessment_1.repositories.HashtagRepository;
-import com.cooksys.assessment_1.repositories.TweetRepository;
-import com.cooksys.assessment_1.repositories.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-
+//package com.cooksys.assessment_1;
+//
+//import java.util.Arrays;
+//import java.util.List;
+//
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.stereotype.Component;
+//
+//import com.cooksys.assessment_1.entities.Credentials;
+//import com.cooksys.assessment_1.entities.Hashtag;
+//import com.cooksys.assessment_1.entities.Profile;
+//import com.cooksys.assessment_1.entities.Tweet;
+//import com.cooksys.assessment_1.entities.User;
+//import com.cooksys.assessment_1.repositories.HashtagRepository;
+//import com.cooksys.assessment_1.repositories.TweetRepository;
+//import com.cooksys.assessment_1.repositories.UserRepository;
+//
+//import lombok.RequiredArgsConstructor;
+//
 //@Component
 //@RequiredArgsConstructor
 //public class Seeder implements CommandLineRunner {
@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 //    private final TweetRepository tweetRepository;
 //    private final UserRepository userRepository;
 //
+
 //    @Override
 //    public void run(String... args) throws Exception {
 //
@@ -279,5 +280,7 @@ import lombok.RequiredArgsConstructor;
 //        user1.setFollowers(followers_1);
 //        userRepository.saveAndFlush(user1);
 //    }
+
+//
 
 //}
