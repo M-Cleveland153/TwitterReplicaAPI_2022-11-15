@@ -173,7 +173,11 @@ public class UserServiceImpl implements UserService {
 		}
 
 		Profile newProfile = profileMapper.dtoToEntity(userRequestDto.getProfile());
+		if(newProfile == null) {
+			throw new BadRequestException("Profile missing");
+		}
 		userToUpdate.setProfile(newProfile);
+		
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
 	}
 
