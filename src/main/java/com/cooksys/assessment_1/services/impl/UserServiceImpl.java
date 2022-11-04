@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return profile;
 	}
-
+	
 	// Checks if User has been deleted or Does Not Exist then returns correct User
 	// if only username/CredentialsDto is requested
 	public User getUserByCredentials(Credentials credentials) {
@@ -176,8 +176,20 @@ public class UserServiceImpl implements UserService {
 		if(newProfile == null) {
 			throw new BadRequestException("Profile missing");
 		}
-		userToUpdate.setProfile(newProfile);
+		if(newProfile.getEmail() == null) {
+			newProfile.setEmail(userToUpdate.getProfile().getEmail());
+		}
+		if(newProfile.getFirstName() == null) {
+			newProfile.setFirstName(userToUpdate.getProfile().getFirstName());
+		}
+		if(newProfile.getLastName() == null) {
+			newProfile.setLastName(userToUpdate.getProfile().getLastName());
+		}
+		if(newProfile.getPhone() == null) {
+			newProfile.setPhone(userToUpdate.getProfile().getPhone());
+		}
 		
+		userToUpdate.setProfile(newProfile);
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
 	}
 
