@@ -60,7 +60,8 @@ public class HashtagServiceImpl implements HashtagService {
 		// check all labels for argument label
 		boolean hasLabel = false;
 		for (String labelElement : allLabelsList) {
-			if (labelElement.equals("#" + label)) {
+//			if (labelElement.equals("#" + label)) {
+			if (labelElement.equals(label)) {
 				hasLabel = true;
 			}
 		}
@@ -72,7 +73,9 @@ public class HashtagServiceImpl implements HashtagService {
 		List<Tweet> tweets = tweetRepository.findAllByDeletedFalse();
 		List<Tweet> taggedTweets = new ArrayList<>();
 		for (Tweet tweet : tweets) {
-			if (tweet.getContent() != null && tweet.getContent().contains("#" + label)) {
+//			if (tweet.getContent() != null && tweet.getContent().contains("#" + label)) {
+			if (tweet.getContent() != null && tweet.getContent().contains(label)) {
+				
 				taggedTweets.add(tweet);
 			}
 		}

@@ -97,6 +97,7 @@ public class TweetServiceImpl implements TweetService {
             // create List<String> and populate with hashtags found
             List<String> hashtagsInContent = new ArrayList<>();
             while (matcher.find()) hashtagsInContent.add(matcher.group().substring(1, matcher.group().length()));    
+//            while (matcher.find()) hashtagsInContent.add(matcher.group());
             
             // Check hashtags against the hashtagRepo, and add if they don't exist
             for (String hashtag : hashtagsInContent)
@@ -178,7 +179,7 @@ public class TweetServiceImpl implements TweetService {
         // Parse the content for hashtags and mentions, then save and flush
         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(parseHashtagsAndMentions(createdTweet)));
     }
-
+    
     @Override
     public TweetResponseDto getTweetById(Long id) {
         return tweetMapper.entityToDto(throwExceptionIfTweetDeleted(getTweet(id)));

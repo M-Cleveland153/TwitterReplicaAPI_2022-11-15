@@ -28,7 +28,8 @@ public class ValidateServiceImpl implements ValidateService {
 	@Override
 	public boolean checkHashtag(String label) {
 		List<Hashtag> hashtags =  hashtagRepository.findAll();
-		String checkTagString = "#" + label;
+//		String checkTagString = "#" + label;
+		String checkTagString = label;
 		for(Hashtag hashtag: hashtags) {
 			if(hashtag.getLabel().equals(checkTagString)) {
 				return true;
