@@ -10,13 +10,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Service;
+
 import com.cooksys.assessment_1.dtos.ContextDto;
 import com.cooksys.assessment_1.dtos.CredentialsDto;
 import com.cooksys.assessment_1.dtos.HashtagResponseDto;
 import com.cooksys.assessment_1.dtos.TweetRequestDto;
 import com.cooksys.assessment_1.dtos.TweetResponseDto;
 import com.cooksys.assessment_1.dtos.UserResponseDto;
-
 import com.cooksys.assessment_1.entities.Credentials;
 import com.cooksys.assessment_1.entities.Hashtag;
 import com.cooksys.assessment_1.entities.Tweet;
@@ -24,18 +25,14 @@ import com.cooksys.assessment_1.entities.User;
 import com.cooksys.assessment_1.exceptions.BadRequestException;
 import com.cooksys.assessment_1.exceptions.NotAuthorizedException;
 import com.cooksys.assessment_1.exceptions.NotFoundException;
-
 import com.cooksys.assessment_1.mappers.CredentialsMapper;
 import com.cooksys.assessment_1.mappers.HashtagMapper;
 import com.cooksys.assessment_1.mappers.TweetMapper;
 import com.cooksys.assessment_1.mappers.UserMapper;
-
 import com.cooksys.assessment_1.repositories.HashtagRepository;
 import com.cooksys.assessment_1.repositories.TweetRepository;
 import com.cooksys.assessment_1.repositories.UserRepository;
 import com.cooksys.assessment_1.services.TweetService;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -92,14 +89,15 @@ public class TweetServiceImpl implements TweetService {
         if (createdTweet.getContent().contains("#"))
         {
             // Use regex to isolate hashtag pattern, compile and use matcher
+                       
             String patternStr = "(#+[a-zA-Z0-9(_)]{1,})";
             Pattern pattern = Pattern.compile(patternStr);
             Matcher matcher = pattern.matcher(createdTweet.getContent());
 
             // create List<String> and populate with hashtags found
             List<String> hashtagsInContent = new ArrayList<>();
-            while (matcher.find()) hashtagsInContent.add(matcher.group());
-
+            while (matcher.find()) hashtagsInContent.add(matcher.group().substring(1, matcher.group().length()));    
+            
             // Check hashtags against the hashtagRepo, and add if they don't exist
             for (String hashtag : hashtagsInContent)
             {
